@@ -1,6 +1,6 @@
 {
   "name": "flow-higher",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Higher-kinded types for Flow",
   "main": "lib/main.js",
   "files": [
@@ -14,13 +14,23 @@
   "license": "MIT",
   "scripts": {
     "build": "make clean && make",
-    "dev": "babel-node"
+    "dev": "babel-node",
+    "flow": "flow",
+    "test": "npm-run-all flow test:unit",
+    "test:unit": "babel-tape-runner $(\\find test | \\grep \\.js) | tap-diff"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
+    "babel-plugin-istanbul": "^3.1.2",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-flow": "^1.0.0",
     "babel-preset-stage-1": "^6.22.0",
-    "flow-bin": "^0.38.0"
+    "babel-tape-runner": "^2.0.1",
+    "coveralls": "^2.11.15",
+    "flow-bin": "^0.38.0",
+    "npm-run-all": "^4.0.1",
+    "nyc": "^10.1.2",
+    "tap-diff": "^0.1.1",
+    "tape": "^4.6.3"
   }
 }
