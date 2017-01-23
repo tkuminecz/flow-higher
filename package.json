@@ -12,12 +12,24 @@
   },
   "author": "Tim Kuminecz <tkuminecz@gmail.com>",
   "license": "MIT",
+  "nyc": {
+    "include": [
+      "src/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
     "build": "make clean && make",
     "dev": "babel-node",
     "flow": "flow",
-    "test": "npm-run-all flow test:unit",
-    "test:unit": "babel-tape-runner $(\\find test | \\grep \\.js) | tap-diff"
+    "test": "npm-run-all flow test:cover",
+    "test:unit": "BABEL_ENV=test babel-tape-runner $(\\find test | \\grep \\.js) | tap-diff",
+    "test:cover": "nyc npm run test:unit && nyc report --reporter=html",
+    "test:coveralls": "nyc npm run test:unit && nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
