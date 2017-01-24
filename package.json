@@ -1,6 +1,6 @@
 {
   "name": "flow-higher",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Higher-kinded types for Flow",
   "main": "lib/main.js",
   "files": [

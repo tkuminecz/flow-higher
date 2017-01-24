@@ -28,6 +28,14 @@ export type $Head<T> = $_Head<*, T>
 type $_Tail<B, T: $List<any, B>> = B
 export type $Tail<T> = $_Tail<*, T>
 
+// convienence methods for extracting types
+export type $T1<T> = $Head<T>
+export type $T2<T> = $Head<$Tail<T>>
+export type $T3<T> = $Head<$Tail<$Tail<T>>>
+export type $T4<T> = $Head<$Tail<$Tail<$Tail<T>>>>
+export type $T5<T> = $Head<$Tail<$Tail<$Tail<$Tail<T>>>>>
+export type $T6<T> = $Head<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>
+
 // creates a union of the types in the list
 type $_Union<A, B, T: $List<A, B>> = A | $Union<B>
 export type $Union<T> = $_Union<*, *, T>
