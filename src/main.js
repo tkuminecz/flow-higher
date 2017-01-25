@@ -40,20 +40,21 @@ export type $T6<T> = $Head<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>
 type $_Union<A, B, T: $List<A, B>> = A | $Union<B>
 export type $Union<T> = $_Union<*, *, T>
 
-export class HigherKind<T: $List<any, any>> {}
+export class Kind<T: $List<any, any>> {}
 
-export class $Higher<K, T: $List<any, any>> {}
+class $_Higher<T, K: Kind<T>> {}
+export class $Higher<K: Kind<any>> extends $_Higher<*, K> {}
 
 /**
- * wrap :: Class (HigherKind t) -> $Higher (HigherKind t) t
+ * wrap :: Class (Kind t) -> $Higher (Kind t)
  */
-export function wrap<T: $List<any, any>, H: HigherKind<T>>(higherKind: Class<H>, values: T): $Higher<H, T> {
-	return ((values: any): $Higher<H, T>);
+export function wrap<T: $List<any, any>, HK: Kind<T>>(higherKind: Class<HK>, values: T): $Higher<HK> {
+	return ((values: any): $Higher<HK>);
 }
 
 /**
- * unwrap :: Class (HigherKind t) -> $Higher (HigherKind t) t -> t
+ * unwrap :: Class (Kind t) -> $Higher (Kind t) -> t
  */
-export function unwrap<T, H: HigherKind<T>>(higherKind: Class<H>, hkt: $Higher<H, T>): T {
+export function unwrap<T, HK: Kind<T>>(higherKind: Class<HK>, hkt: $Higher<HK>): T {
 	return ((hkt: any): T);
 }

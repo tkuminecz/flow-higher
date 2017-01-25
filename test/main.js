@@ -1,12 +1,12 @@
 // @flow
 import type { $List, $End, $Head, $Tail, $1List, $2List, $3List, $4List, $5List, $6List, $Union } from '../src/main';
-import { End, HigherKind, unwrap, wrap } from '../src/main';
+import { End, Kind, unwrap, wrap } from '../src/main';
 import test from 'tape';
 
 test('Higher', t => {
 	t.plan(1);
 
-	class A_Kind extends HigherKind<$1List<number>> {}
+	class A_Kind extends Kind<$1List<number>> {}
 
 	let a = 42,
 		hkt_a = wrap(A_Kind, [ a, End ]);
