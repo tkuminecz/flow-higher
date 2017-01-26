@@ -40,28 +40,19 @@ export type $T6<T> = $Head<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>
 type $_Union<A, B, T: $List<A, B>> = A | $Union<B>
 export type $Union<T> = $_Union<*, *, T>
 
-export class Kind<T: $List<any, any>> {}
-
-class $_Higher<T, K: Kind<T>> {}
-export class $Higher<K: Kind<any>> extends $_Higher<*, K> {}
+/**
+ * `TypeConstructor` class
+ *
+ * Represents a type constructor that accepts one or more type parameters
+ */
+export class HigherType<T: $List<any, any>> {}
 
 /**
- * wrap :: Class (Kind t) -> $Higher (Kind t)
+ * `TypeApplication` class
+ *
+ * Represents the application of a type constructor (also called an inhabited or proper type)
  */
-export function wrap<T: $List<any, any>, HK: Kind<T>>(higherKind: Class<HK>, values: T): $Higher<HK> {
-	return ((values: any): $Higher<HK>);
-}
-
-/**
- * unwrap :: Class (Kind t) -> $Higher (Kind t) -> t
- */
-export function unwrap<T, HK: Kind<T>>(higherKind: Class<HK>, hkt: $Higher<HK>): T {
-	return ((hkt: any): T);
-}
-
-
-
-export class Higher<K, V> {
+export class HigherTypeAp<K, V> {
 
 	/**
 	 * wrap :: (t v) => Class (Kind t) -> v -> Higher (Kind t) v
@@ -84,4 +75,4 @@ export class Higher<K, V> {
 
 class MaybeKind extends Kind<$1List<any>> {}
 
-(Higher.wrap(MaybeKind, [42, End]): Higher<MaybeKind, $1List<number>>);
+(Higher.wrap(MaybeKind, [42, ['tim', End]]): Higher<MaybeKind, $1List<number>>);

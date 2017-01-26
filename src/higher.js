@@ -1,45 +1,91 @@
-// @flow
+export class End {}
 
-/**
- * defining type signatures
- */
+export type $End = Class<End>
 
-export class end {}
+export type $List<A, B: $End | $List<any, any>> = { head: A, tail: B }
 
-type $End = Class<end>
+export type $1List<A> = { head: A, tail: $End }
+export type $2List<A, B> = { head: A, tail: $1List<B> }
+export type $3List<A, B, C> = { head: A, tail: $2List<B, C> }
+export type $4List<A, B, C, D> = { head: A, tail: $3List<B, C, D> }
 
-export type $Sig<Head, Tail: $Sig<> | $End> = [Head, Tail]
+export type $Head<T> = $PropertyType<T, 'value'>
+export type $Tail<T> = $PropertyType<T, 'tail'>
 
-export type $Sig1<A> = $Sig<A, $End>
-export type $Sig2<A, B> = $Sig<A, $Sig<B, $End>>
-export type $Sig3<A, B, C> = $Sig<A, $Sig<B, $Sig<C, $End>>>
-export type $Sig4<A, B, C, D> = $Sig<A, $Sig<B, $Sig<C, $Sig<D, $End>>>>
-export type $Sig5<A, B, C, D, E> = $Sig<A, $Sig<B, $Sig<C, $Sig<D, $Sig<E, $End>>>>>
-export type $Sig6<A, B, C, D, E, F> = $Sig<A, $Sig<B, $Sig<C, $Sig<D, $Sig<E, $Sig<F, $End>>>>>>
+export type $1<T> = $Head<T>
+export type $2<T> = $Head<$Tail<T>>
+export type $3<T> = $Head<$Tail<$Tail<T>>>
+export type $4<T> = $Head<$Tail<$Tail<$Tail<T>>>>
 
-/**
- * extracting types from signatures
- */
+type $KindTypes<K> = $PropertyType<K, 'types'>
 
-type $_Head<T, S: $Sig<T, any>> = T
-export type $Head<S> = $_Head<*, S>
+class Kind<T> {
+  types: T
+}
 
-type $_Tail<T, S: $Sig<any, T>> = T
-export type $Tail<S> = $_Tail<*, S>
+type $ParamTypes<P> = $PropertyType<P, 'type'>
 
-export type $T1<T> = $Head<T>
-export type $T2<T> = $Head<$Tail<T>>
-export type $T3<T> = $Head<$Tail<$Tail<T>>>
-export type $T4<T> = $Head<$Tail<$Tail<$Tail<T>>>>
-export type $T5<T> = $Head<$Tail<$Tail<$Tail<$Tail<T>>>>>
-export type $T6<T> = $Head<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>
+class TypeParams<T> {
+  type: T
+}
 
-/**
- * transforming signatures
- */
+const UnaryKind: Kind<$1List<any>> = new Kind();
+const BinaryKind: Kind<$2List<any>> = new Kind();
 
-type $_Union<A, B, T: $Sig<A, B>> = A | $Union<B>
-export type $Union<T> = $_Union<*, *, T>
+interface TypeConstructorClass<K> {
+  apply<T: $KindTypes<K>>(params: TypeParams<T>): TypeApplication<K, T>
+}
 
-type $_SwapHead<OldHead, NewHead, Tail, Sig: $Sig<OldHead, Tail>> = $Sig<NewHead, Tail>
-export type $SwapHead<S, A, B> = $_SwapHead<A, B, *, S>
+type TypeConstructor<K> = <T>(params: TypeParams<T>) => TypeApplication<K, T>
+
+class TypeApplication<K, T> {}
+
+function typeConstructor<K>(kind: K): TypeConstructor<K> {
+  return <T>(types): TypeApplication<K, T> => new TypeApplication();
+}
+
+/*
+
+class _Key {}
+class TypeConstructor<K: Kind<any>> {
+
+  static kind: K
+
+  /**
+   * of :: (Kind k) => k -> TypeConstructor k
+   *
+  static of<K: Kind<any>>(kind: K): TypeConstructorClass<K> {
+    return class extends TypeConstructor<K> {
+
+      static apply<T: $KindTypes<K>>(params: TypeParams<T>): TypeApplication<K, T> {
+  		return new TypeApplication();
+      }
+
+    };
+  }
+
+}
+
+
+class TypeApplication<K, T> {
+
+  kind: K
+
+  typeParams: T
+
+  /**
+   * of :: TypeConstructor k -> TypeParams t -> TypeApplication k t
+   *
+  static of<K, T>(typeCtor: Class<TypeConstructor<K>>, params: TypeParams<T>): TypeApplication<K, T> {
+    return new TypeApplication();
+  }
+
+}
+
+
+let MaybeKind = TypeConstructor.of(UnaryKind);
+
+let NumParam: TypeParams<$1List<number>> = new TypeParams();
+
+(MaybeKind.apply(NumParam): TypeApplication<MaybeKind, $1List<number>>);
+*/
