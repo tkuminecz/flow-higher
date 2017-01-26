@@ -58,3 +58,30 @@ export function wrap<T: $List<any, any>, HK: Kind<T>>(higherKind: Class<HK>, val
 export function unwrap<T, HK: Kind<T>>(higherKind: Class<HK>, hkt: $Higher<HK>): T {
 	return ((hkt: any): T);
 }
+
+
+
+export class Higher<K, V> {
+
+	/**
+	 * wrap :: (t v) => Class (Kind t) -> v -> Higher (Kind t) v
+	 */
+	static wrap<T: $List<any, any>, V: T, K: Kind<T>>(kind: Class<K>, value: V): Higher<K, V> {
+		return ((value: any): Higher<K, V>);
+	}
+
+	/**
+	 * unwrap ::
+	 */
+	static unwrap<T, V: T, K: Kind<V>>(kind: Class<K>, higher: Higher<K, V>): V {
+		return ((higher: any): V);
+	}
+
+}
+
+
+
+
+class MaybeKind extends Kind<$1List<any>> {}
+
+(Higher.wrap(MaybeKind, [42, End]): Higher<MaybeKind, $1List<number>>);
