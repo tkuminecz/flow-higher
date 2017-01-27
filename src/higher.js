@@ -1,3 +1,4 @@
+// @flow
 export class End {}
 
 export type $End = Class<End>
@@ -17,75 +18,91 @@ export type $2<T> = $Head<$Tail<T>>
 export type $3<T> = $Head<$Tail<$Tail<T>>>
 export type $4<T> = $Head<$Tail<$Tail<$Tail<T>>>>
 
+export type $A<T> = $1<T>
+export type $B<T> = $2<T>
+export type $C<T> = $3<T>
+export type $D<T> = $4<T>
+
 type $KindTypes<K> = $PropertyType<K, 'types'>
 
-class Kind<T> {
-  types: T
+export class Kind<T> {
+	types: T
 }
 
 type $ParamTypes<P> = $PropertyType<P, 'type'>
 
-class TypeParams<T> {
-  type: T
+export class TypeParams<T> {
+	type: T
 }
 
-const UnaryKind: Kind<$1List<any>> = new Kind();
-const BinaryKind: Kind<$2List<any>> = new Kind();
+export const UnaryKind: Kind<$1List<any>> = new Kind();
+export const BinaryKind: Kind<$2List<any>> = new Kind();
 
-interface TypeConstructorClass<K> {
-  apply<T: $KindTypes<K>>(params: TypeParams<T>): TypeApplication<K, T>
+
+class TypeConstructor<K> {
+	kind: K
 }
-
-type TypeConstructor<K> = <T>(params: TypeParams<T>) => TypeApplication<K, T>
-
-class TypeApplication<K, T> {}
-
-function typeConstructor<K>(kind: K): TypeConstructor<K> {
-  return <T>(types): TypeApplication<K, T> => new TypeApplication();
-}
-
-/*
-
-class _Key {}
-class TypeConstructor<K: Kind<any>> {
-
-  static kind: K
-
-  /**
-   * of :: (Kind k) => k -> TypeConstructor k
-   *
-  static of<K: Kind<any>>(kind: K): TypeConstructorClass<K> {
-    return class extends TypeConstructor<K> {
-
-      static apply<T: $KindTypes<K>>(params: TypeParams<T>): TypeApplication<K, T> {
-  		return new TypeApplication();
-      }
-
-    };
-  }
-
-}
-
 
 class TypeApplication<K, T> {
+	kind: K
+	types: T
+}
 
-  kind: K
+type $TypeApKind<A> = $PropertyType<A, 'kind'>
+type $TypeApTypes<A> = $PropertyType<A, 'types'>
 
-  typeParams: T
+export function typeConstructor<K>(kind: K): Class<TypeConstructor<K>> {
+	return class extends TypeConstructor<K> {};
+}
 
-  /**
-   * of :: TypeConstructor k -> TypeParams t -> TypeApplication k t
-   *
-  static of<K, T>(typeCtor: Class<TypeConstructor<K>>, params: TypeParams<T>): TypeApplication<K, T> {
-    return new TypeApplication();
-  }
+class Data<Ctor, Tags> {
+
+	constructor() {}
 
 }
 
 
-let MaybeKind = TypeConstructor.of(UnaryKind);
 
-let NumParam: TypeParams<$1List<number>> = new TypeParams();
+let MaybeT = typeConstructor(UnaryKind);
 
-(MaybeKind.apply(NumParam): TypeApplication<MaybeKind, $1List<number>>);
-*/
+type MaybeTags<T> =
+	| { tag: 'Just', value: $A<T> }
+	| { tag: 'Nothing' }
+
+class MaybeData<T> extends Data<MaybeT, MaybeTags<T>> {}
+
+
+// type TypeConstructor<K> = <T>(params: TypeParams<T>) => TypeApplication<K, T>
+//
+//
+// type $TypeApKind<A> = $PropertyType<A, 'kind'>
+// type $TypeApTypes<A> = $PropertyType<A, 'types'>
+//
+// class TypeApplication<K, T> {
+//
+// 	kind: K
+//
+// 	types: T
+//
+// }
+//
+// export function typeConstructor<K>(kind: K): TypeConstructor<K> {
+// 	return <T>(types): TypeApplication<K, T> => new TypeApplication();
+// }
+//
+// class DataType<Ctor> {}
+//
+//
+//
+// let maybeT = typeConstructor(UnaryKind);
+//
+// let maybeParams: TypeParams<$1List<number>> = new TypeParams();
+//
+// maybeT(maybeParams);
+//
+// type MaybeTags<T> =
+// 	| { tag: 'Just', value: $A<T> }
+// 	| { tag: 'Nothing' }
+//
+//
+// class MaybeData extends DataType<typeof maybeT> {}
