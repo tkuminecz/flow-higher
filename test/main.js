@@ -1,4 +1,4 @@
-// @flow
+// @flo
 import type { $List, $End, $Head, $Tail, $1List, $2List, $3List, $4List, $5List, $6List, $Union } from '../src/main';
 import { End, Kind, unwrap, wrap } from '../src/main';
 import test from 'tape';
