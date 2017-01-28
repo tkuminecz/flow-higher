@@ -1,6 +1,5 @@
-// @flow
+	// @flow
 import type { $End, $1Type, $A, $List, $SwapA } from './main';
-
 
 class Type<Kind, Types, Data> {
 
@@ -13,7 +12,6 @@ class Type<Kind, Types, Data> {
 	}
 
 }
-
 
 class IsMaybe {}
 
