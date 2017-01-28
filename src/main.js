@@ -43,3 +43,15 @@ export type $SwapD<T, D2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<D2, $Ta
 
 type $_Union<A, B, L: $List<A, B>> = A | $Union<B> // eslint-disable-line no-unused-vars
 export type $Union<L> = $_Union<*, *, L>
+
+export class Type<Kind, Types, Data> {
+
+	static wrap<I: Type<Kind, Types, Data>>(kind: Class<Kind>, data: Data): I {
+		return ((data: any): I);
+	}
+
+	static unwrap<I: Type<Kind, Types, Data>>(kind: Class<Kind>, wrapped: I): Data {
+		return ((wrapped: any): Data);
+	}
+
+}

@@ -2,9 +2,13 @@
 
 Higher-kinded types for Flow
 
+## Defining Types
+
+We can define higher-kinded types using by extending the `Type` class.
+
 ## API
 
-#### `type $List<Head, Tail>`
+### `type $List<Head, Tail>`
 
 A list of types. `Head` is the first type in the list, and `Tail` is either `$End` or another `$List`.
 
@@ -12,7 +16,7 @@ A list of types. `Head` is the first type in the list, and `Tail` is either `$En
 import { type $List } from 'flow-higher';
 ```
 
-#### `type $End`
+### `type $End`
 
 The end of a `$List`. The only value of type `$End` is `End`.
 
@@ -20,7 +24,7 @@ The end of a `$List`. The only value of type `$End` is `End`.
 import { type $End, End } from 'flow-higher';
 ```
 
-#### `type $Head<List>`
+### `type $Head<List>`
 
 The head type of the given `$List`.
 
@@ -31,10 +35,9 @@ type TList = $List<string, $List<number, $End>>
 
 // extract the head (ie the first element)
 ('foo': $Head<TList>); // OK
-
 ```
 
-#### `type $Tail<List>`
+### `type $Tail<List>`
 
 The tail of the given `$List`. Either another `$List` or `$End`.
 
@@ -51,7 +54,7 @@ type TList = $List<string, $List<number, $End>>
 (42: $Head<$Tail<TList>>); // OK
 ```
 
-#### `type $Union<List>`
+### `type $Union<List>`
 
 Represents the union of types in the given `$List`.
 
@@ -65,46 +68,37 @@ type NumberOrString = $Union<SomeList>
 ('foo': NumberOrString); // OK
 (42: NumberOrString); // OK
 (true: NumberOrString); // Error!
-
-
-
 ```
 
-#### `type $1List<A>`
-#### `type $2List<A, B>`
-#### `type $3List<A, B, C>`
-#### `type $4List<A, B, C, D>`
-#### `type $5List<A, B, C, D, E>`
-#### `type $6List<A, B, C, D, E, F>`
+### `type $ListOf1<A>`
+### `type $ListOf2<A, B>`
+### `type $ListOf3<A, B, C>`
+### `type $ListOf4<A, B, C, D>`
 
 Convenience types for `$List`s of up to six types.
 
 ```javascript
 import type { $1list, $2List, $3list } from 'flow-higher';
-
-
 ```
 
-#### `class Kind<List>`
+### `class Type<Kind, Signature, Data>`
 
-Used to define higher-kinded types.
+Defines a new higher-kinded type.
 
 ```javascript
-import { type $2list, Kind } from 'flow-higher';
+import { type $2Types, Type } from 'flow-higher';
 
-// define a higher-kinded type with two types
-class MyType extends Kind<$2List<any, any>> {}
+class IsPair {}
+
+export class Pair<A, B> extends Type<IsPair, $2Types<A, B>, [A, B]> {
+
+  static Pair: <A, B>(a: A, b: B) => Pair<A, B>
+    = (a, b) => Pair._wrap(IsPair, [a, b]);
+
+}
 ```
 
-#### `type $Higher<HigherKind>`
-
-Represents a value of the given kind.
-
-```javascript
-import { type $Higher } from 'flow-higher';
-```
-
-#### `function wrap(kind, value)`
+### `function wrap(kind, value)`
 
 Takes a `Kind` class and a compatible `$List` of values and returns a value of type `$Higher`.
 
@@ -112,7 +106,7 @@ Takes a `Kind` class and a compatible `$List` of values and returns a value of t
 import { wrap } from 'flow-higher';
 ```
 
-#### `function unwrap(kind, wrappedValue)`
+### `function unwrap(kind, wrappedValue)`
 
 Takes a `HigherKind` class and a compatible `$Higher` and returns a `$List` of values.
 
