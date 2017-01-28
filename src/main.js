@@ -3,57 +3,55 @@
 export class End {}
 export type $End = Class<End>
 
-export type $List<A, B: $List<any, any> | $End> = [A, B]
+export type $List<H, T: $End | $List<any, any>> = [H, T]
 
-// convienence types for creating lists of various lengths
-export type $1List<A> = $List<A, $End>
-export type $2List<A, B> = $List<A, $1List<B>>
-export type $3List<A, B, C> = $List<A, $2List<B, C>>
-export type $4List<A, B, C, D> = $List<A, $3List<B, C, D>>
-export type $5List<A, B, C, D, E> = $List<A, $4List<B, C, D, E>>
-export type $6List<A, B, C, D, E, F> = $List<A, $5List<B, C, D, E, F>>
+export type $Types<H, T: $End | $Types<any, any>> = $List<H, T>
 
-export const list1 = <A>(a: A): $1List<A> => [ a, End ];
-export const list2 = <A, B>(a: A, b: B): $2List<A, B> => [ a, list1(b) ];
-export const list3 = <A, B, C>(a: A, b: B, c: C): $3List<A, B, C> => [ a, list2(b, c) ];
-export const list4 = <A, B, C, D>(a: A, b: B, c: C, d: D): $4List<A, B, C, D> => [ a, list3(b, c, d) ];
-export const list5 = <A, B, C, D, E>(a: A, b: B, c: C, d: D, e: E): $5List<A, B, C, D, E> => [ a, list4(b, c, d, e) ];
-export const list6 = <A, B, C, D, E, F>(a: A, b: B, c: C, d: D, e: E, f: F): $6List<A, B, C, D, E, F> => [ a, list5(b, c, d, e, f) ];
+// lists of n types
+export type $ListOf1<A> = $List<A, $End>
+export type $ListOf2<A, B> = $List<A, $ListOf1<B>>
+export type $ListOf3<A, B, C> = $List<A, $ListOf2<B, C>>
+export type $ListOf4<A, B, C, D> = $List<A, $ListOf3<B, C, D>>
 
-// extracts the head type of a list
-type $_Head<A, T: $List<A, any>> = A
-export type $Head<T> = $_Head<*, T>
+export type $1Type<A> = $ListOf1<A>
+export type $2Types<A, B> = $ListOf2<A, B>
+export type $3Types<A, B, C> = $ListOf3<A, B, C>
+export type $4Types<A, B, C, D> = $ListOf4<A, B, C, D>
 
-// extracts the tail list of a list
-type $_Tail<B, T: $List<any, B>> = B
-export type $Tail<T> = $_Tail<*, T>
+type $_Head<H, L: $List<H, any>> = H // eslint-disable-line no-unused-vars
+export type $Head<L> = $_Head<*, L>
 
-// convienence methods for extracting types
-export type $T1<T> = $Head<T>
-export type $T2<T> = $Head<$Tail<T>>
-export type $T3<T> = $Head<$Tail<$Tail<T>>>
-export type $T4<T> = $Head<$Tail<$Tail<$Tail<T>>>>
-export type $T5<T> = $Head<$Tail<$Tail<$Tail<$Tail<T>>>>>
-export type $T6<T> = $Head<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>
+type $_Tail<T, L: $List<any, T>> = T // eslint-disable-line no-unused-vars
+export type $Tail<L> = $_Tail<*, L>
 
-// creates a union of the types in the list
-type $_Union<A, B, T: $List<A, B>> = A | $Union<B>
-export type $Union<T> = $_Union<*, *, T>
+// access the nth type in a list
+export type $1<L> = $Head<L>
+export type $2<L> = $Head<$Tail<L>>
+export type $3<L> = $Head<$Tail<$Tail<L>>>
+export type $4<L> = $Head<$Tail<$Tail<$Tail<L>>>>
 
-export class HigherKind<T: $List<any, any>> {}
+export type $A<L> = $1<L>
+export type $B<L> = $2<L>
+export type $C<L> = $3<L>
+export type $D<L> = $4<L>
 
-export class $Higher<K, T: $List<any, any>> {}
+// swap types in the nth position of a list
+export type $SwapA<T, A2> = $List<A2, $Tail<T>>
+export type $SwapB<T, B2> = $List<$A<T>, $List<B2, $Tail<$Tail<T>>>>
+export type $SwapC<T, C2> = $List<$A<T>, $List<$B<T>, $List<C2, $Tail<$Tail<$Tail<T>>>>>>
+export type $SwapD<T, D2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<D2, $Tail<$Tail<$Tail<$Tail<T>>>>>>>>
 
-/**
- * wrap :: Class (HigherKind t) -> $Higher (HigherKind t) t
- */
-export function wrap<T: $List<any, any>, H: HigherKind<T>>(higherKind: Class<H>, values: T): $Higher<H, T> {
-	return ((values: any): $Higher<H, T>);
-}
+type $_Union<A, B, L: $List<A, B>> = A | $Union<B> // eslint-disable-line no-unused-vars
+export type $Union<L> = $_Union<*, *, L>
 
-/**
- * unwrap :: Class (HigherKind t) -> $Higher (HigherKind t) t -> t
- */
-export function unwrap<T, H: HigherKind<T>>(higherKind: Class<H>, hkt: $Higher<H, T>): T {
-	return ((hkt: any): T);
+export class Type<Kind, Types, Data> {
+
+	static wrap<I: Type<Kind, Types, Data>>(kind: Class<Kind>, data: Data): I {
+		return ((data: any): I);
+	}
+
+	static unwrap<I: Type<Kind, Types, Data>>(kind: Class<Kind>, wrapped: I): Data {
+		return ((wrapped: any): Data);
+	}
+
 }
