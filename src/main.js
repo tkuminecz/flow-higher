@@ -48,6 +48,8 @@ export type $Union<L> = $_Union<*, *, L>
 
 export type $Tag<Label, Data> = { tag: Label, val: $TupleMap<Data, <V>(v: V) => V> }
 
+export type $App<K, T> = $Subtype<Type<K, T, *>>
+
 export class Type<Kind, Types, Data> {
 
 	/**
