@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import type { $1Type, $A, $End, $Head, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Union } from '../src/main';
+import type { $1Type, $A, $End, $Head, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Union, $Tag } from '../src/main';
 import { End, Type } from '../src/main';
 import test from 'tape';
 
@@ -14,24 +14,25 @@ test('Higher', t => {
 	class Maybe<A> extends Type<
 			IsMaybe,
 			$1Type<A>,
-			| { tag: 'Just', value: A }
-			| { tag: 'Nothing' }
+			| $Tag<'Just', [A]>
+			| $Tag<'Nothing', []>
 		> {
 
 		static Just<A>(a: A): Maybe<A> {
-			return Maybe.wrap(IsMaybe, { tag: 'Just', value: a });
+			return Maybe.wrap(IsMaybe, { tag: 'Just', value: [a] });
 		}
 
 		static Nothing<A>(): Maybe<A> {
-			return Maybe.wrap(IsMaybe, { tag: 'Nothing' });
+			return Maybe.wrap(IsMaybe, { tag: 'Nothing', value: [] });
 		}
 
-		static cases<A, B>(cases: { Just: (a: A) => B, Nothing: () => B }, ma: Maybe<A>): B {
+		static cases<A, B>(cases: { Just: (v: [A]) => B, Nothing: () => B }, ma: Maybe<A>): B {
 			const data = Maybe.unwrap(IsMaybe, ma);
 
 			switch (data.tag) {
-			case 'Just':
+			case 'Just': {
 				return cases.Just(data.value);
+			}
 
 			case 'Nothing':
 				return cases.Nothing();
@@ -44,7 +45,7 @@ test('Higher', t => {
 
 		static map<A, B>(f: (a: A) => B, ma: Maybe<A>): Maybe<B> {
 			return Maybe.cases({
-				Just: (a) => Maybe.Just(f(a)),
+				Just: ([a]) => Maybe.Just(f(a)),
 				Nothing: () => Maybe.Nothing()
 			}, ma);
 		}

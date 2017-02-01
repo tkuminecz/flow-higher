@@ -18,6 +18,8 @@ export type $2Types<A, B> = $ListOf2<A, B>
 export type $3Types<A, B, C> = $ListOf3<A, B, C>
 export type $4Types<A, B, C, D> = $ListOf4<A, B, C, D>
 
+export type $Empty=  $1Type<empty>
+
 type $_Head<H, L: $List<H, any>> = H // eslint-disable-line no-unused-vars
 export type $Head<L> = $_Head<*, L>
 
@@ -44,7 +46,9 @@ export type $SwapD<T, D2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<D2, $Ta
 type $_Union<A, B, L: $List<A, B>> = A | $Union<B> // eslint-disable-line no-unused-vars
 export type $Union<L> = $_Union<*, *, L>
 
-export class Type<Kind, Types, Data> {
+export type $Tag<Label, Data> = { tag: Label, value: $TupleMap<Data, <V>(v: V) => V> }
+
+export class Type<Kind, Types, Data: $Tag<any, any>> {
 
 	static wrap<I: Type<Kind, Types, Data>>(kind: Class<Kind>, data: Data): I {
 		return ((data: any): I);
