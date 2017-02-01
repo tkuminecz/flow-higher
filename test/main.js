@@ -19,19 +19,17 @@ test('Higher', t => {
 		> {
 
 		static Just<A>(a: A): Maybe<A> {
-			return Maybe.wrap(IsMaybe, { tag: 'Just', value: [a] });
+			return Maybe._({ tag: 'Just', val: [a] });
 		}
 
-		static Nothing<A>(): Maybe<A> {
-			return Maybe.wrap(IsMaybe, { tag: 'Nothing', value: [] });
-		}
+		static Nothing: Maybe<any> = Maybe._({ tag: 'Nothing', val: [] })
 
 		static cases<A, B>(cases: { Just: (v: [A]) => B, Nothing: () => B }, ma: Maybe<A>): B {
 			const data = Maybe.unwrap(IsMaybe, ma);
 
 			switch (data.tag) {
 			case 'Just': {
-				return cases.Just(data.value);
+				return cases.Just(data.val);
 			}
 
 			case 'Nothing':
@@ -46,7 +44,7 @@ test('Higher', t => {
 		static map<A, B>(f: (a: A) => B, ma: Maybe<A>): Maybe<B> {
 			return Maybe.cases({
 				Just: ([a]) => Maybe.Just(f(a)),
-				Nothing: () => Maybe.Nothing()
+				Nothing: () => Maybe.Nothing
 			}, ma);
 		}
 
