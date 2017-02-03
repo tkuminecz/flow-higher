@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import type { $1Type, $A, $End, $Head, $HigherApp, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Union, $Tag } from '../src/main';
+import type { $1Type, $A, $End, $Head, $App, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Union, $Tag } from '../src/main';
 import { End, HigherType } from '../src/main';
 import test from 'tape';
 
@@ -54,11 +54,11 @@ test('Higher', t => {
 	(Maybe: Functor<IsMaybe, *>);
 
 	interface Matchable<K, T, C> {
-		cases<B>(cases: C, ma: $HigherApp<K, T>): B
+		cases<B>(cases: C, ma: $App<K, T>): B
 	}
 
 	interface Functor<K, T> {
-		map<B>(f: (a: $A<T>) => B, fa: $HigherApp<K, T>): $HigherApp<K, $SwapA<T, B>>
+		map<B>(f: (a: $A<T>) => B, fa: $App<K, T>): $App<K, $SwapA<T, B>>
 	}
 
 });
