@@ -1,7 +1,7 @@
 // @flow
-import type { $List } from 'flow-type-list';
+import type { $List, $SwapA } from 'flow-type-list';
 
-export class $App<K, T> {} // eslint-disable-line no-unused-vars
+export type $App<K, T> = $Subtype<HigherType<K, T, *>>
 
 /**
  * `HigherType` class
@@ -9,16 +9,16 @@ export class $App<K, T> {} // eslint-disable-line no-unused-vars
 export class HigherType<K, T: $List<any, any>, V> {
 
 	/**
-	 * wrap :: Class k -> v -> $App k t
+	 * wrap :: Class k -> v -> HigherType k t v
 	 */
-	static wrap(kind: Class<K>, data: V): $App<K, T> {
+	static wrap<I: HigherType<K, T, V>>(kind: Class<K>, data: V): I {
 		return ((data: any): $App<K, T>);
 	}
 
 	/**
-	 * unwrap :: Class k -> $App k t -> v
+	 * unwrap :: Class k -> HigherType k t v -> v
 	 */
-	static unwrap(kind: Class<K>, wrapped: $App<K, T>): V {
+	static unwrap<I: HigherType<K, T, V>>(kind: Class<K>, wrapped: I): V {
 		return ((wrapped: any): V);
 	}
 
