@@ -1,6 +1,6 @@
 {
   "name": "flow-higher",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "Higher-kinded types for Flow",
   "main": "lib/main.js",
   "files": [
@@ -47,6 +47,7 @@
     "tape": "^4.6.3"
   },
   "dependencies": {
-    "flow-helpers": "^0.2.0"
+    "flow-helpers": "^0.2.0",
+    "flow-type-list": "^1.0.0"
   }
 }

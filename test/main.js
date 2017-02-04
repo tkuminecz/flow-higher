@@ -1,6 +1,6 @@
-// @flow
-/* eslint-disable no-unused-expressions */
-import type { $1Type, $A, $End, $Head, $App, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Union, $Tag } from '../src/main';
+// @flo
+/* eslint-disable no-unused-expressions *
+import type { $1Type, $A, $End, $Head, $App, $List, $ListOf1, $ListOf2, $ListOf3, $ListOf4, $SwapA, $Tail, $Tag } from '../src/main';
 import { End, HigherType } from '../src/main';
 import test from 'tape';
 
@@ -106,11 +106,6 @@ if (false) { // eslint-disable-line no-constant-condition
 	('tim': $Head<$ListOf4<string, number, bool, string>>);
 	([29, [true, ['bar', End]]]: $Tail<$ListOf4<string, number, bool, string>>);
 	// $FlowFixMe
-	([29, [true, [42, End]]]: $Tail<$ListOf4<string, number, bool, string>>);
-
-	// union
-	('tim': $Union<$ListOf2<string, number>>);
-	(42: $Union<$ListOf2<string, number>>);
-	// $FlowFixMe
-	(true: $Union<$ListOf2<string, number>>);
+	([29, [true, [42, End]]]: $Tail<$ListOf4<string, number, bool, string>>);o
 }
+*/
