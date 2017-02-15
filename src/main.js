@@ -1,90 +1,48 @@
 // @flow
-
-export class End {}
-export type $End = Class<End>
-
-export type $List<H, T: $End | $List<any, any>> = [H, T]
-
-export type $Types<H, T: $End | $Types<any, any>> = $List<H, T>
-
-// lists of n types
-export type $ListOf1<A> = $List<A, $End>
-export type $ListOf2<A, B> = $List<A, $ListOf1<B>>
-export type $ListOf3<A, B, C> = $List<A, $ListOf2<B, C>>
-export type $ListOf4<A, B, C, D> = $List<A, $ListOf3<B, C, D>>
-export type $ListOf5<A, B, C, D, E> = $List<A, $ListOf4<B, C, D, E>>
-export type $ListOf6<A, B, C, D, E, F> = $List<A, $ListOf5<B, C, D, E, F>>
-
-export type $1Type<A> = $ListOf1<A>
-export type $2Types<A, B> = $ListOf2<A, B>
-export type $3Types<A, B, C> = $ListOf3<A, B, C>
-export type $4Types<A, B, C, D> = $ListOf4<A, B, C, D>
-export type $5Types<A, B, C, D, E> = $ListOf5<A, B, C, D, E>
-export type $6Types<A, B, C, D, E, F> = $ListOf6<A, B, C, D, E, F>
-
-export type $Empty = $1Type<empty>
-export type $Unit = $Empty
-
-type $_Head<H, L: $List<H, any>> = H // eslint-disable-line no-unused-vars
-export type $Head<L> = $_Head<*, L>
-
-type $_Tail<T, L: $List<any, T>> = T // eslint-disable-line no-unused-vars
-export type $Tail<L> = $_Tail<*, L>
-
-// access the nth type in a list
-export type $1<L> = $Head<L>
-export type $2<L> = $Head<$Tail<L>>
-export type $3<L> = $Head<$Tail<$Tail<L>>>
-export type $4<L> = $Head<$Tail<$Tail<$Tail<L>>>>
-export type $6<L> = $Head<$Tail<$Tail<$Tail<$Tail<L>>>>>
-export type $5<L> = $Head<$Tail<$Tail<$Tail<$Tail<L>>>>>
-
-export type $A<L> = $1<L>
-export type $B<L> = $2<L>
-export type $C<L> = $3<L>
-export type $D<L> = $4<L>
-export type $E<L> = $5<L>
-export type $F<L> = $6<L>
-
-// swap types in the nth position of a list
-export type $SwapA<T, A2> = $List<A2, $Tail<T>>
-export type $SwapB<T, B2> = $List<$A<T>, $List<B2, $Tail<$Tail<T>>>>
-export type $SwapC<T, C2> = $List<$A<T>, $List<$B<T>, $List<C2, $Tail<$Tail<$Tail<T>>>>>>
-export type $SwapD<T, D2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<D2, $Tail<$Tail<$Tail<$Tail<T>>>>>>>>
-export type $SwapE<T, E2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<$D<T>, $List<E2, $Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>>>>>
-export type $SwapF<T, F2> = $List<$A<T>, $List<$B<T>, $List<$C<T>, $List<$D<T>, $List<$E<T>, $List<F2, $Tail<$Tail<$Tail<$Tail<$Tail<$Tail<T>>>>>>>>>>>>
-
-type $_Union<A, B, L: $List<A, B>> = A | $Union<B> // eslint-disable-line no-unused-vars
-export type $Union<L> = $_Union<*, *, L>
-
-export type $Tag<Label, Data> = { tag: Label, val: $TupleMap<Data, <V>(v: V) => V> }
-
-export type $App<K, T> = $Subtype<HigherType<K, T, *>>
+import type { Cons } from 'flow-type-list';
 
 /**
- * `HigherType` class
+ * `Kind` class
  */
-export class HigherType<Kind, Types, Data> {
+class Kind {
+	kindName: string
+}
+
+/**
+ * kind :: string -> Class Kind
+ */
+export const kind = (name: string): Class<Kind> => class extends Kind {
+	kindName = name
+};
+
+/**
+ * `TypeDef` class
+ */
+export class TypeDef<K: Kind, T, V> {
 
 	/**
-	 * _ :: d -> HigherType k t d
+	 * inj :: (Kind k) => (Class k, v) -> App k t
 	 */
-	static _<I: HigherType<Kind, Types, Data>>(data: Data): I {
-		return ((data: any): I);
+	static inj(kind: Class<K>, value: V): App<K, T> {
+		return ((value: any): App<K, T>);
 	}
 
 	/**
-	 * wrap :: Class k -> d -> HigherType k t d
+	 * prj :: (Kind k) => (Class k, App k t) -> v
 	 */
-	static wrap<I: HigherType<Kind, Types, Data>>(kind: Class<Kind>, data: Data): I {
-		return ((data: any): I);
-	}
-
-	/**
-	 * unwrap :: Class k -> HigherType k t d -> d
-	 */
-	static unwrap<I: HigherType<Kind, Types, Data>>(kind: Class<Kind>, wrapped: I): Data {
-		return ((wrapped: any): Data);
+	static prj(kind: Class<K>, app: App<K, T>): V {
+		return ((app: any): V);
 	}
 
 }
+
+// `App` - represents type application
+export type App<K, T> = $Subtype<TypeDef<K, T, *>>
+
+// convenience types for applications of varying arities
+export type App1<K, A> = App<K, Cons<A, *>>
+export type App2<K, A, B> = App<K, Cons<A, Cons<B, *>>>
+export type App3<K, A, B, C> = App<K, Cons<A, Cons<B, Cons<C, *>>>>
+export type App4<K, A, B, C, D> = App<K, Cons<A, Cons<B, Cons<C, Cons<D, *>>>>>
+export type App5<K, A, B, C, D, E> = App<K, Cons<A, Cons<B, Cons<C, Cons<D, Cons<E, *>>>>>>
+export type App6<K, A, B, C, D, E, F> = App<K, Cons<A, Cons<B, Cons<C, Cons<D, Cons<E, Cons<F, *>>>>>>>
