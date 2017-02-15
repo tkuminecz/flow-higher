@@ -1,6 +1,6 @@
 {
   "name": "flow-higher",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Higher-kinded types for Flow",
   "main": "lib/main.js",
   "files": [
@@ -29,7 +29,8 @@
     "test": "npm-run-all flow test:cover",
     "test:unit": "BABEL_ENV=test babel-tape-runner $(\\find test | \\grep \\.js) | tap-diff",
     "test:cover": "nyc npm run test:unit && nyc report --reporter=html",
-    "test:coveralls": "nyc npm run test:unit && nyc report --reporter=text-lcov | coveralls"
+    "test:coveralls": "nyc npm run test:unit && nyc report --reporter=text-lcov | coveralls",
+    "travis": "npm-run-all flow test:coveralls"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
@@ -40,14 +41,13 @@
     "babel-tape-runner": "^2.0.1",
     "coveralls": "^2.11.15",
     "eslint-config-proper": "^0.5.0",
-    "flow-bin": "^0.38.0",
+    "flow-bin": "0.39.0",
     "npm-run-all": "^4.0.1",
     "nyc": "^10.1.2",
     "tap-diff": "^0.1.1",
     "tape": "^4.6.3"
   },
   "dependencies": {
-    "flow-helpers": "^0.2.0",
-    "flow-type-list": "^1.0.0"
+    "flow-type-list": "3.0.0"
   }
 }
