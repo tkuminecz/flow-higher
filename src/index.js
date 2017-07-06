@@ -1,52 +1,39 @@
 // @flow
-import type { Cons } from 'flow-type-list';
+import type { Cons, List } from 'flow-type-list';
 
 /**
- * `Higher` class
+ * `Higher` type
  */
-export class Higher<K, I, T> {
-
-	kind: Class<K>
-
-	getInstance: () => I
-
-	value: T
-
-	constructor(kind: Class<K>, getInstance: () => I, value: T) {
-		this.kind = kind;
-		this.getInstance = getInstance;
-		this.value = value;
-	}
-
-}
+class _Higher<Kind, TypeSig: List<any, any>> {} // eslint-disable-line no-unused-vars
+export type Higher<K, T> = _Higher<K, T>
 
 /**
- * `TypeDef` class
+ * `HigherType` class
  */
-export class TypeDef<Kind, TypeSig, InnerValue> {
+export class HigherType< Kind, TypeSig: List<any, any>, InnerValue> {
 
 	/**
 	 * `inj`
 	 *
-	 * :: (Class K, I, T) -> Higher K I T
+	 * :: (Class K, V) -> Higher K T
 	 */
-	static inj<Instance>(kind: Class<Kind>, getInstance: () => Instance, value: InnerValue): Higher<Kind, Instance, TypeSig> {
-		return new Higher(kind, getInstance, ((value: any): TypeSig));
+	static inj(kind: Class<Kind>, value: InnerValue): Higher<Kind, TypeSig> {
+		return ((value: any): Higher<Kind, TypeSig>);
 	}
 
 	/**
 	 * `prj`
 	 *
-	 * :: (Class K, Higher K I T) -> T
+	 * :: (Class Kind, Higher K) -> InnerValue
 	 */
-	static prj<Instance>(kind: Class<Kind>, higher: Higher<Kind, Instance, TypeSig>): InnerValue {
-		return ((higher.value: any): InnerValue);
+	static prj(kind: Class<Kind>, higher: Higher<Kind, TypeSig>): InnerValue {
+		return ((higher: any): InnerValue);
 	}
 
 }
 
 // `App` - represents type application
-export type App<K, T> = Higher<K, *, T>
+export type App<K, T> = Higher<K, T>
 
 // convenience types for applications of varying arities
 export type App1<K, A> = App<K, Cons<A, *>>
